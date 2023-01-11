@@ -362,23 +362,25 @@ public class StreamEngine implements MediaEngine, MediaEngine.Listener {
 		return eng.getSubtitleStreamInfo();
 	}
 
+	@Nullable
 	@Override
 	public AudioStreamInfo getCurrentAudioStreamInfo() {
 		return eng.getCurrentAudioStreamInfo();
 	}
 
 	@Override
-	public void setCurrentAudioStream(AudioStreamInfo i) {
+	public void setCurrentAudioStream(@Nullable AudioStreamInfo i) {
 		eng.setCurrentAudioStream(i);
 	}
 
+	@Nullable
 	@Override
 	public SubtitleStreamInfo getCurrentSubtitleStreamInfo() {
 		return eng.getCurrentSubtitleStreamInfo();
 	}
 
 	@Override
-	public void setCurrentSubtitleStream(SubtitleStreamInfo i) {
+	public void setCurrentSubtitleStream(@Nullable SubtitleStreamInfo i) {
 		eng.setCurrentSubtitleStream(i);
 	}
 

@@ -75,18 +75,20 @@ public interface MediaEngine extends Closeable {
 		return Collections.emptyList();
 	}
 
+	@Nullable
 	default AudioStreamInfo getCurrentAudioStreamInfo() {
 		return null;
 	}
 
-	default void setCurrentAudioStream(AudioStreamInfo i) {
+	default void setCurrentAudioStream(@Nullable AudioStreamInfo i) {
 	}
 
+	@Nullable
 	default SubtitleStreamInfo getCurrentSubtitleStreamInfo() {
 		return null;
 	}
 
-	default void setCurrentSubtitleStream(SubtitleStreamInfo i) {
+	default void setCurrentSubtitleStream(@Nullable SubtitleStreamInfo i) {
 	}
 
 	default boolean isAudioDelaySupported() {

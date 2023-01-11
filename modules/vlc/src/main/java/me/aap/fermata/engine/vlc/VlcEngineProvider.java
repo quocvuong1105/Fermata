@@ -1,15 +1,23 @@
 package me.aap.fermata.engine.vlc;
 
+import static org.videolan.libvlc.interfaces.IMedia.Parse.DoInteract;
+import static org.videolan.libvlc.interfaces.IMedia.Parse.FetchLocal;
+import static org.videolan.libvlc.interfaces.IMedia.Parse.FetchNetwork;
+import static org.videolan.libvlc.interfaces.IMedia.Parse.ParseLocal;
+import static org.videolan.libvlc.interfaces.IMedia.Parse.ParseNetwork;
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import android.content.ContentResolver;
 import android.content.Context;
 import android.media.AudioManager;
-import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.support.v4.media.MediaMetadataCompat;
 
-import org.videolan.libvlc.LibVLC;
+import org.videolan.libvlc.FactoryManager;
 import org.videolan.libvlc.Media;
+import org.videolan.libvlc.interfaces.ILibVLC;
+import org.videolan.libvlc.interfaces.ILibVLCFactory;
 import org.videolan.libvlc.interfaces.IMedia;
 
 import java.io.File;
@@ -26,18 +34,11 @@ import me.aap.utils.io.IoUtils;
 import me.aap.utils.log.Log;
 import me.aap.utils.security.SecurityUtils;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.videolan.libvlc.interfaces.IMedia.Parse.DoInteract;
-import static org.videolan.libvlc.interfaces.IMedia.Parse.FetchLocal;
-import static org.videolan.libvlc.interfaces.IMedia.Parse.FetchNetwork;
-import static org.videolan.libvlc.interfaces.IMedia.Parse.ParseLocal;
-import static org.videolan.libvlc.interfaces.IMedia.Parse.ParseNetwork;
-
 /**
  * @author Andrey Pavlenko
  */
 public class VlcEngineProvider implements MediaEngineProvider {
-	private LibVLC vlc;
+	private ILibVLC vlc;
 	private int audioSessionId;
 	private String artUri;
 
@@ -48,8 +49,7 @@ public class VlcEngineProvider implements MediaEngineProvider {
 		audioSessionId = (am != null) ? am.generateAudioSessionId() : AudioManager.ERROR;
 
 		if (BuildConfig.D) opts.add("-vvv");
-		if (audioSessionId != AudioManager.ERROR)
-			opts.add("--audiotrack-session-id=" + audioSessionId);
+		if (audioSessionId != AudioManager.ERROR) opts.add("--audiotrack-session-id=" + audioSessionId);
 
 		opts.add("--avcodec-skiploopfilter");
 		opts.add("1");
@@ -68,13 +68,13 @@ public class VlcEngineProvider implements MediaEngineProvider {
 		opts.add("--freetype-rel-fontsize=16");
 		opts.add("--freetype-color=16777215");
 		opts.add("--freetype-background-opacity=0");
-		opts.add("--no-sout-chromecast-audio-passthrough");
-		opts.add("--sout-chromecast-conversion-quality=2");
+//		opts.add("--no-sout-chromecast-audio-passthrough");
+//		opts.add("--sout-chromecast-conversion-quality=2");
 //		opts.add("--aout=opensles,android_audiotrack");
-//		opts.add("--vout=android_display");
-//		opts.add("--vout=opengles2");
+//		opts.add("--vout=gles2,none");
 
-		vlc = new LibVLC(ctx, opts);
+		ILibVLCFactory f = (ILibVLCFactory) FactoryManager.getFactory(ILibVLCFactory.factoryId);
+		vlc = f.getFromOptions(ctx, opts);
 	}
 
 	@Override
@@ -86,7 +86,6 @@ public class VlcEngineProvider implements MediaEngineProvider {
 	public boolean getMediaMetadata(MetadataBuilder meta, PlayableItem item) {
 		Media media = null;
 		ParcelFileDescriptor fd = null;
-		MediaMetadataRetriever mmr = null;
 
 		try {
 			Uri uri = item.getLocation();
@@ -133,8 +132,7 @@ public class VlcEngineProvider implements MediaEngineProvider {
 				if (m.startsWith("file://")) {
 					meta.setImageUri(m);
 				} else if (m.startsWith("attachment://")) {
-					if (((artist != null) && !artist.isEmpty() && !"Unknown Artist".equals(artist)) &&
-							((album != null) && !album.isEmpty() && !"Unknown Album".equals(artist))) {
+					if (((artist != null) && !artist.isEmpty() && !"Unknown Artist".equals(artist)) && ((album != null) && !album.isEmpty() && !"Unknown Album".equals(artist))) {
 						m = getArtUri() + "artistalbum/" + artist + "/" + album + "/art.png";
 					} else {
 						String hash = SecurityUtils.md5String(UTF_8, m, title);
@@ -153,16 +151,11 @@ public class VlcEngineProvider implements MediaEngineProvider {
 			return false;
 		} finally {
 			if (media != null) media.release();
-			try {
-				mmr.release();
-			} catch (Exception ex) {
-				Log.d(ex);
-			}
 			IoUtils.close(fd);
 		}
 	}
 
-	public LibVLC getVlc() {
+	public ILibVLC getVlc() {
 		return vlc;
 	}
 
