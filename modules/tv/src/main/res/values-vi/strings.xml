@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sub_ch">Kênh: %1$d.</string>
+    <string name="sub_gr">Nhóm: %1$d.</string>
+    <string name="sub_ch_gr">Kênh: %1$d. Nhóm: %2$d.</string>
+    <string name="add_tv_source">Thêm nguồn M3U IPTV</string>
+    <string name="epg" translatable="false">Lịch phát sóng</string>
+    <string name="epg_url" translatable="false">XMLTV URL</string>
+    <string name="epg_time_shift">Thay đổi thời gian phát sóng EPG (giờ)</string>
+    <string name="logo">Biểu tượng kênh</string>
+    <string name="logo_location">Vị trí</string>
+    <string name="logo_location_hint">Thư mục hoặc Liên kết http(s)</string>
+    <string name="logo_prefer_epg">Lấy biểu tượng từ lịch phát sóng (EPG)</string>
+    <string name="catchup" translatable="false">Catchup</string>
+    <string name="catchup_query">Định dạng truy vấn</string>
+    <string name="catchup_type">Catchup type</string>
+    <string name="catchup_type_cur">Current catchup type: %1$s</string>
+    <string name="catchup_type_auto">Tự động</string>
+    <string name="catchup_type_append" translatable="false">Append</string>
+    <string name="catchup_type_default" translatable="false">Default</string>
+    <string name="catchup_type_shift" translatable="false">Shift</string>
+    <string name="catchup_type_flussonic" translatable="false">Flussonic</string>
+    <string name="catchup_days">Số ngày</string>
+    <string name="connection_settings">Thiết lập kết nối</string>
+
+    <string name="err_failed_to_add_tv_source">Không thể thêm nguồn: %1$s</string>
+</resources>
